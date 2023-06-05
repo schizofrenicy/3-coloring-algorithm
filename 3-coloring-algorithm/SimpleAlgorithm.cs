@@ -32,7 +32,7 @@ namespace _3_coloring_algorithm
 
             for (int color = 0; color < numOfColors; color++)
             {
-                if (TryColor(g, vertex, color))
+                if (TryColor(g, vertex, (ColorEnum)color))
                 {
                     colors[vertex] = color;
                 }
@@ -50,13 +50,13 @@ namespace _3_coloring_algorithm
             return false;
         }
 
-        static bool TryColor(UndirectedGraph<int, SUndirectedEdge<int>> g, int vertex, int color)
+        static bool TryColor(UndirectedGraph<int, SUndirectedEdge<int>> g, int vertex, ColorEnum color)
         {
             var neighbors = g.AdjacentVertices(vertex);
 
             foreach (var n in neighbors)
             {
-                if (n < vertex && colors[n] == color)
+                if (n < vertex && colors[n] == (int)color)
                 {
                     return false;
                 }
