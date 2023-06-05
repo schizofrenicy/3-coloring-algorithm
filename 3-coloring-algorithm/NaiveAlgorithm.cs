@@ -11,7 +11,7 @@ namespace _3_coloring_algorithm
         {
             colors = new int[g.VertexCount];
 
-            if (Naive3ColoringRecursive(g, 0))
+            if (Naive3ColoringRecursive(g))
             {
                 colorsResult = colors;
                 return true;
@@ -23,7 +23,7 @@ namespace _3_coloring_algorithm
             }
         }
 
-        static bool Naive3ColoringRecursive(UndirectedGraph<int, SUndirectedEdge<int>> g, int vertex)
+        static bool Naive3ColoringRecursive(UndirectedGraph<int, SUndirectedEdge<int>> g, int vertex = 0)
         {
             if (vertex == g.VertexCount)
             {

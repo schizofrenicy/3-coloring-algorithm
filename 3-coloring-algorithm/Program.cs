@@ -6,7 +6,7 @@ namespace _3_coloring_algorithm
     {
         static void Main(string[] args)
         {
-            UndirectedGraph<int, SUndirectedEdge<int>> g = new UndirectedGraph<int, SUndirectedEdge<int>>();
+            UndirectedGraph<int, SUndirectedEdge<int>> g = new();
             for (int i = 0; i < 10; i++)
             {
                 g.AddVertex(i);
@@ -31,10 +31,10 @@ namespace _3_coloring_algorithm
             //g.AddEdge(new SUndirectedEdge<int>(0, 3));
             //g.AddEdge(new SUndirectedEdge<int>(1, 3));
 
-            var result = NaiveAlgorithm.Naive3Coloring(g, out int[] colors);
-            Console.WriteLine(result);
+            var success = NaiveAlgorithm.Naive3Coloring(g, out int[] colors);
+            Console.WriteLine(success);
 
-            if (result)
+            if (success)
             {
                 for (int i = 0; i < g.VertexCount; i++)
                 {

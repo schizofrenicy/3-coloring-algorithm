@@ -10,9 +10,9 @@ namespace _3_coloring_algorithm
             {
                 var neighbors = g.AdjacentVertices(vertex);
 
-                foreach (var neighbor in neighbors)
+                foreach (var n in neighbors)
                 {
-                    if (colors[neighbor] == colors[vertex]) return false;
+                    if (colors[n] == colors[vertex]) return false;
                 }
             }
 
