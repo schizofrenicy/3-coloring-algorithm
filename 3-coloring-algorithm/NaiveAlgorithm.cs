@@ -34,7 +34,10 @@ namespace _3_coloring_algorithm
             {
                 colors[vertex] = color;
 
-                if (Naive3ColoringRecursive(g, vertex + 1)) return true;
+                if (Naive3ColoringRecursive(g, vertex + 1))
+                {
+                    return true;
+                }
             }
 
             return false;

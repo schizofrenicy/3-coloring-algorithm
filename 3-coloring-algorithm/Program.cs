@@ -37,11 +37,12 @@
             //g.AddEdge(new SUndirectedEdge<int>(6, 8));
             //g.AddEdge(new SUndirectedEdge<int>(6, 9));
             //g.AddEdge(new SUndirectedEdge<int>(7, 9));
-            ////g.AddEdge(new SUndirectedEdge<int>(0, 2));
-            ////g.AddEdge(new SUndirectedEdge<int>(0, 3));
-            ////g.AddEdge(new SUndirectedEdge<int>(1, 3));
+            //g.AddEdge(new SUndirectedEdge<int>(0, 2));
+            //g.AddEdge(new SUndirectedEdge<int>(0, 3));
+            //g.AddEdge(new SUndirectedEdge<int>(1, 3));
 
-            //var success = NaiveAlgorithm.Naive3Coloring(g, out int[] colors);
+            //// var success = NaiveAlgorithm.Naive3Coloring(g, out int[] colors);
+            //var success = SimpleAlgorithm.Simple3Coloring(g, out int[] colors);
             //Console.WriteLine(success);
 
             //if (success)
