@@ -64,11 +64,11 @@ namespace _3_coloring_algorithm
         public IEnumerable<ColorEnum> VertexColors(int vertex)
         {
             List<ColorEnum> toReturn = new();
-            var verticies = Vertices();
+            var vertices = Vertices();
 
-            for(int i = 0; i < a; i++)
+            for (int i = 0; i < a; i++)
             {
-                if (verticies.Contains(vertex * a + i))
+                if (vertices.Contains(vertex * a + i))
                 {
                     toReturn.Add((ColorEnum)i);
                 }
@@ -89,7 +89,7 @@ namespace _3_coloring_algorithm
             var neighbors = g.AdjacentVertices(vertexRealIndex);
 
             List<(int index, ColorEnum color)> toReturn = new();
-            foreach(var n in neighbors)
+            foreach (var n in neighbors)
             {
                 int neighborIndex = n / a;
                 ColorEnum neighborColor = (ColorEnum)(n - neighborIndex * a);
@@ -101,15 +101,15 @@ namespace _3_coloring_algorithm
 
         public bool RemoveEdge((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
         {
-            int v1RealIndex = v1.index * a + (int)v2.color;
+            int v1RealIndex = v1.index * a + (int)v1.color;
             int v2RealIndex = v2.index * a + (int)v2.color;
 
-            return (g.RemoveEdge(new SUndirectedEdge<int>(v1RealIndex, v2RealIndex)) || g.RemoveEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex)));
+            return g.RemoveEdge(new SUndirectedEdge<int>(v1RealIndex, v2RealIndex)) || g.RemoveEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex));
         }
 
         public bool AddEdge((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
         {
-            int v1RealIndex = v1.index * a + (int)v2.color;
+            int v1RealIndex = v1.index * a + (int)v1.color;
             int v2RealIndex = v2.index * a + (int)v2.color;
 
             if (g.ContainsEdge(new SUndirectedEdge<int>(v1RealIndex,v2RealIndex)) || g.ContainsEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex)))
@@ -140,7 +140,7 @@ namespace _3_coloring_algorithm
             {
                 if (!RemoveEdge((index, color), n))
                 {
-                    return false;
+                    throw new Exception("Unable to remove edge!");
                 }
             }
 
