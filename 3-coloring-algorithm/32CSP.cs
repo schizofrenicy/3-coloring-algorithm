@@ -64,11 +64,10 @@ namespace _3_coloring_algorithm
         public IEnumerable<ColorEnum> VertexColors(int vertex)
         {
             List<ColorEnum> toReturn = new();
-            var vertices = Vertices();
 
             for (int i = 0; i < a; i++)
             {
-                if (vertices.Contains(vertex * a + i))
+                if (g.Vertices.Contains(vertex * a + i))
                 {
                     toReturn.Add((ColorEnum)i);
                 }
@@ -112,7 +111,7 @@ namespace _3_coloring_algorithm
             int v1RealIndex = v1.index * a + (int)v1.color;
             int v2RealIndex = v2.index * a + (int)v2.color;
 
-            if (g.ContainsEdge(new SUndirectedEdge<int>(v1RealIndex,v2RealIndex)) || g.ContainsEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex)))
+            if (g.ContainsEdge(new SUndirectedEdge<int>(v1RealIndex, v2RealIndex)) || g.ContainsEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex)))
             {
                 return false;
             }
@@ -145,6 +144,45 @@ namespace _3_coloring_algorithm
             }
 
             return g.RemoveVertex(vertexRealIndex);
+        }
+
+        public IEnumerable<((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)> Constraints()
+        {
+            List<((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)> toReturn = new();
+
+            var verticies = Vertices();
+            foreach (var v in verticies)
+            {
+                var colors = VertexColors(v);
+                foreach (var c in colors)
+                {
+                    var neighbors = VertexNeighbors(v, c);
+                    foreach (var n in neighbors)
+                    {
+                        if (v < n.index)
+                        {
+                            toReturn.Add(((v, c), n));
+                        }
+                    }
+                }
+            }
+
+            return toReturn;
+        }
+
+        public bool RemoveNode(int index)
+        {
+            var colors = VertexColors(index);
+
+            foreach (var c in colors)
+            {
+                if (!RemoveVertex(index, c))
+                {
+                    throw new Exception("Unable to remove vertex");
+                }
+            }
+
+            return true;
         }
     }
 }
