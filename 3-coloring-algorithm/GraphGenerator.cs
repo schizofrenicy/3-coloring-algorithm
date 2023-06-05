@@ -10,6 +10,15 @@ namespace _3_coloring_algorithm
         {
             UndirectedGraph<int, SUndirectedEdge<int>> result = new();
 
+            if (size < 0 || size > 10000)
+            {
+                Console.WriteLine("Value of size must be between 0 and 10000!");
+            }
+            if (percentage < 0 || percentage > 100)
+            {
+                Console.WriteLine("Value of percentage must be between 0 and 100!");
+            }
+
             for (int i = 0; i < size; i++)
             {
                 result.AddVertex(i);
@@ -25,7 +34,7 @@ namespace _3_coloring_algorithm
                 }
             }
 
-            var edgesSize = percentage * possibleEdges.Count;
+            var edgesSize = percentage / 100.0 * possibleEdges.Count;
 
             for (int i = 0; i < edgesSize; i++)
             {
