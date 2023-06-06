@@ -42,24 +42,15 @@ namespace _3_coloring_algorithm
 
         static bool Lemma4(_32CSP csp, out int node, out ColorEnum? color)
         {
-            var constraints = csp.Constraints();
             var nodes = csp.Nodes();
-
             foreach (var n in nodes)
             {
                 var colors = csp.NodeColors(n);
                 foreach (var col in colors)
                 {
-                    bool isInConstraint = false;
-                    foreach (var c in constraints)
-                    {
-                        if ((c.v1.index == n && c.v1.color == col) || (c.v2.index == n && c.v2.color == col))
-                        {
-                            isInConstraint = true;
-                            break;
-                        }
-                    }
-                    if (!isInConstraint)
+                    var contraints = csp.VertexConstraints(n, col);
+
+                    if (contraints.Count() == 0)
                     {
                         node = n;
                         color = col;
