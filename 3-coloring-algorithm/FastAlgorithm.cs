@@ -1,4 +1,5 @@
 ﻿using QuikGraph;
+using System.Diagnostics.Contracts;
 
 namespace _3_coloring_algorithm
 {
@@ -34,9 +35,9 @@ namespace _3_coloring_algorithm
                 var constraints1 = csp.VertexConstraints(node, col.ElementAt(0));
                 var constraints2 = csp.VertexConstraints(node, col.ElementAt(1));
 
-                foreach(var c1 in constraints1)
+                foreach (var c1 in constraints1)
                 {
-                    foreach(var c2 in constraints2)
+                    foreach (var c2 in constraints2)
                     {
                         if (c1.index != c2.index)
                         {
@@ -49,7 +50,12 @@ namespace _3_coloring_algorithm
 
                 return Fast3ColoringRecursive(csp, colors);
             }
-            if (Lemma4(csp, out node, out ColorEnum? color))
+            if (Lemma3(csp, out node, out ColorEnum? color))
+            {
+                csp.RemoveVertex(node, (ColorEnum)color!);
+                return Fast3ColoringRecursive(csp, colors);
+            }
+            if (Lemma4(csp, out node, out color))
             {
                 colors[node] = (int)color!;
                 csp.RemoveNode(node);
@@ -68,7 +74,6 @@ namespace _3_coloring_algorithm
         static bool Lemma1(_32CSP csp, out int index)
         {
             index = -1;
-
             var nodes = csp.Nodes();
             foreach(var n in nodes)
             {
@@ -79,6 +84,35 @@ namespace _3_coloring_algorithm
                 }
             }
           
+            return false;
+        }
+
+        static bool Lemma3(_32CSP csp, out int node, out ColorEnum? color)
+        {
+            var nodes = csp.Nodes();
+            foreach (var n in nodes)
+            {
+                var colors = csp.NodeColors(n);
+                for (int i = 0; i < colors.Count(); i++)
+                {
+                    var constraints = csp.VertexConstraints(n, (ColorEnum)i);
+                    for (int j = i + 1; j < colors.Count(); j++)
+                    {
+                        foreach (var c in constraints)
+                        {
+                            if (csp.IsConstrained((c.index, c.color), (n, (ColorEnum)j)))
+                            {
+                                node = n;
+                                color = (ColorEnum)j;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            node = -1;
+            color = null;
             return false;
         }
 
