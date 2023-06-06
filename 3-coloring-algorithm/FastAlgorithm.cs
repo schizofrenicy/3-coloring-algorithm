@@ -238,7 +238,7 @@ namespace _3_coloring_algorithm
             return false;
         }
 
-        static bool Lemma5(_32CSP csp, out int node, out ColorEnum? color)
+        static bool Lemma5(CSP csp, out int node, out ColorEnum? color)
         {
             var nodes = csp.Nodes();
             foreach (var n in nodes)
@@ -250,7 +250,12 @@ namespace _3_coloring_algorithm
 
                     foreach (var c in constraints)
                     {
-                        if (csp.IsConstrained((n, col), (c.index, ColorEnum.A)) && csp.IsConstrained((n, col), (c.index, ColorEnum.B)) && csp.IsConstrained((n, col), (c.index, ColorEnum.C)))
+                        bool cond = true;
+                        for (int i = 0; i < csp.NodeSize; i++)
+                        {
+                            cond &= csp.IsConstrained((n, col), (c.index, (ColorEnum)i));
+                        }
+                        if (cond)
                         {
                             node = n;
                             color = col;
