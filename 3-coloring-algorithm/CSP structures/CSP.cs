@@ -2,37 +2,10 @@
 
 namespace _3_coloring_algorithm
 {
-    internal class _32CSP
+    abstract class CSP
     {
-        private UndirectedGraph<int, SUndirectedEdge<int>> g;
-        static readonly int a = 3;
-
-        public _32CSP(UndirectedGraph<int, SUndirectedEdge<int>> graph)
-        {
-            // transform 3-coloring graph problem to 3,2-CSP instance
-
-            g = new();
-
-            for (int i = 0; i < graph.VertexCount * a; i++)
-            {
-                g.AddVertex(i);
-            }
-
-            for (int i = 0; i < graph.VertexCount; i++)
-            {
-                var vertices = graph.AdjacentVertices(i);
-
-                foreach (var v in vertices)
-                {
-                    if (i < v)
-                    {
-                        g.AddEdge(new SUndirectedEdge<int>(i * a, v * a));
-                        g.AddEdge(new SUndirectedEdge<int>(i * a + 1, v * a + 1));
-                        g.AddEdge(new SUndirectedEdge<int>(i * a + 2, v * a + 2));
-                    }
-                }
-            }
-        }
+        internal UndirectedGraph<int, SUndirectedEdge<int>> g = new();
+        abstract public int NodeSize { get; }
 
         public IEnumerable<int> Nodes()
         {
@@ -43,14 +16,14 @@ namespace _3_coloring_algorithm
             }
 
             int vertexMaxIndx = vertices.Max();
-            int possibleNodes = (vertexMaxIndx / a) + 1;
+            int possibleNodes = (vertexMaxIndx / NodeSize) + 1;
 
             List<int> toReturn = new();
             for (int i = 0; i < possibleNodes; i++)
             {
-                for (int j = 0; j < a; j++)
+                for (int j = 0; j < NodeSize; j++)
                 {
-                    if (vertices.Contains(i * a + j))
+                    if (vertices.Contains(i * NodeSize + j))
                     {
                         toReturn.Add(i);
                         break;
@@ -70,9 +43,9 @@ namespace _3_coloring_algorithm
         {
             List<ColorEnum> toReturn = new();
 
-            for (int i = 0; i < a; i++)
+            for (int i = 0; i < NodeSize; i++)
             {
-                if (g.Vertices.Contains(node * a + i))
+                if (g.Vertices.Contains(node * NodeSize + i))
                 {
                     toReturn.Add((ColorEnum)i);
                 }
@@ -83,7 +56,7 @@ namespace _3_coloring_algorithm
 
         public IEnumerable<(int index, ColorEnum color)> VertexConstraints(int index, ColorEnum color)
         {
-            int vertexRealIndex = index * a + (int)color;
+            int vertexRealIndex = index * NodeSize + (int)color;
 
             if (!g.ContainsVertex(vertexRealIndex))
             {
@@ -95,8 +68,8 @@ namespace _3_coloring_algorithm
             List<(int index, ColorEnum color)> toReturn = new();
             foreach (var n in neighbors)
             {
-                int neighborIndex = n / a;
-                ColorEnum neighborColor = (ColorEnum)(n - neighborIndex * a);
+                int neighborIndex = n / NodeSize;
+                ColorEnum neighborColor = (ColorEnum)(n - neighborIndex * NodeSize);
                 toReturn.Add((neighborIndex, neighborColor));
             }
 
@@ -105,16 +78,16 @@ namespace _3_coloring_algorithm
 
         public bool RemoveConstraint((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
         {
-            int v1RealIndex = v1.index * a + (int)v1.color;
-            int v2RealIndex = v2.index * a + (int)v2.color;
+            int v1RealIndex = v1.index * NodeSize + (int)v1.color;
+            int v2RealIndex = v2.index * NodeSize + (int)v2.color;
 
             return g.RemoveEdge(new SUndirectedEdge<int>(v1RealIndex, v2RealIndex)) || g.RemoveEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex));
         }
 
         public bool AddConstraint((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
         {
-            int v1RealIndex = v1.index * a + (int)v1.color;
-            int v2RealIndex = v2.index * a + (int)v2.color;
+            int v1RealIndex = v1.index * NodeSize + (int)v1.color;
+            int v2RealIndex = v2.index * NodeSize + (int)v2.color;
 
             if (g.ContainsEdge(new SUndirectedEdge<int>(v1RealIndex, v2RealIndex)) || g.ContainsEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex)))
             {
@@ -137,7 +110,7 @@ namespace _3_coloring_algorithm
 
         public bool RemoveVertex(int index, ColorEnum color)
         {
-            int vertexRealIndex = index * a + (int)color;
+            int vertexRealIndex = index * NodeSize + (int)color;
             var neighbors = VertexConstraints(index, color);
 
             foreach (var n in neighbors)
@@ -192,8 +165,8 @@ namespace _3_coloring_algorithm
 
         public bool IsConstrained((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
         {
-            int v1RealIndex = v1.index * a + (int)v1.color;
-            int v2RealIndex = v2.index * a + (int)v2.color;
+            int v1RealIndex = v1.index * NodeSize + (int)v1.color;
+            int v2RealIndex = v2.index * NodeSize + (int)v2.color;
 
             return g.ContainsEdge(new SUndirectedEdge<int>(v1RealIndex, v2RealIndex)) || g.ContainsEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex));
         }
