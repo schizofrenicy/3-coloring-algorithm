@@ -9,11 +9,6 @@ namespace _3_coloring_algorithm
         {
             var csp = new _32CSP(g);
 
-            csp.AddConstraint((0, ColorEnum.A), (1, ColorEnum.B));
-
-            Lemma3(csp, out int node, out ColorEnum? color);
-            Console.WriteLine(color);
-
             colorsResult = new int[g.VertexCount];
             Array.Fill(colorsResult, -1);
 
