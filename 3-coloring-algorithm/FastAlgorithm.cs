@@ -28,11 +28,11 @@ namespace _3_coloring_algorithm
                 // wywołujemy rekurencyjnie obie (albo więcej) kopii (colors też jest kopią)
                 // na koniec jakoś te wyniki łączymy i zwracamy
             }
-            if (Lemma1(csp, out int index))
+            if (Lemma1(csp, out int node))
             {
-                var col = csp.NodeColors(index);
-                var constraints1 = csp.VertexConstraints(index, col.ElementAt(0));
-                var constraints2 = csp.VertexConstraints(index, col.ElementAt(1));
+                var col = csp.NodeColors(node);
+                var constraints1 = csp.VertexConstraints(node, col.ElementAt(0));
+                var constraints2 = csp.VertexConstraints(node, col.ElementAt(1));
 
                 foreach(var c1 in constraints1)
                 {
@@ -45,14 +45,19 @@ namespace _3_coloring_algorithm
                     }
                 }
 
-                csp.RemoveNode(index);
+                csp.RemoveNode(node);
 
                 return Fast3ColoringRecursive(csp, colors);
             }
-            if (Lemma4(csp, out int node, out ColorEnum? color))
+            if (Lemma4(csp, out node, out ColorEnum? color))
             {
                 colors[node] = (int)color!;
                 csp.RemoveNode(node);
+                return Fast3ColoringRecursive(csp, colors);
+            }
+            if (Lemma5(csp, out node, out color))
+            {
+                csp.RemoveVertex(node, (ColorEnum)color!);
                 return Fast3ColoringRecursive(csp, colors);
             }
             
@@ -85,9 +90,9 @@ namespace _3_coloring_algorithm
                 var colors = csp.NodeColors(n);
                 foreach (var col in colors)
                 {
-                    var contraints = csp.VertexConstraints(n, col);
+                    var constraints = csp.VertexConstraints(n, col);
 
-                    if (contraints.Count() == 0)
+                    if (constraints.Count() == 0)
                     {
                         node = n;
                         color = col;
@@ -95,6 +100,33 @@ namespace _3_coloring_algorithm
                     }
                 }
             }
+            node = -1;
+            color = null;
+            return false;
+        }
+
+        static bool Lemma5(_32CSP csp, out int node, out ColorEnum? color)
+        {
+            var nodes = csp.Nodes();
+            foreach (var n in nodes)
+            {
+                var colors = csp.NodeColors(n);
+                foreach (var col in colors)
+                {
+                    var constraints = csp.VertexConstraints(n, col);
+
+                    foreach (var c in constraints)
+                    {
+                        if (csp.IsConstrained((n, col), (c.index, ColorEnum.A)) && csp.IsConstrained((n, col), (c.index, ColorEnum.B)) && csp.IsConstrained((n, col), (c.index, ColorEnum.C)))
+                        {
+                            node = n;
+                            color = col;
+                            return true;
+                        }
+                    }
+                }
+            }
+
             node = -1;
             color = null;
             return false;
