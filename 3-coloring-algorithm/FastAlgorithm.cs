@@ -78,7 +78,7 @@ namespace _3_coloring_algorithm
             return false;
         }
       
-        static bool Lemma1(_32CSP csp, out int node)
+        static bool Lemma1(CSP csp, out int node)
         {
             node = -1;
 
@@ -96,7 +96,7 @@ namespace _3_coloring_algorithm
         }
 
         static bool Lemma2(_32CSP csp, out int node, out ColorEnum? color1, out int node2, out ColorEnum? color2)
-        { 
+        {
             var nodes = csp.Nodes();
             foreach (var n in nodes)
             {
@@ -143,7 +143,7 @@ namespace _3_coloring_algorithm
             return false;
         }
 
-        static bool Lemma3(_32CSP csp, out int node, out ColorEnum? color)
+        static bool Lemma3(CSP csp, out int node, out ColorEnum? color)
         {
             var nodes = csp.Nodes();
             foreach (var n in nodes)
@@ -172,7 +172,7 @@ namespace _3_coloring_algorithm
             return false;
         }
 
-        static bool Lemma4(_32CSP csp, out int node, out ColorEnum? color)
+        static bool Lemma4(CSP csp, out int node, out ColorEnum? color)
         {
             var nodes = csp.Nodes();
             foreach (var n in nodes)
