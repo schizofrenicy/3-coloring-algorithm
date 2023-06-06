@@ -113,6 +113,8 @@ namespace _3_coloring_algorithm
                         if (col == c) continue;
 
                         var newNeighbors = csp.VertexConstraints(nextNodeIndex, col);
+
+                        if (newNeighbors.Count() == 3) continue;
                         if (newNeighbors.Count() == 0) continue; // will be dealt with in lemma 4
 
                         if (newNeighbors.ElementAt(0).index == n && (newNeighbors.Count() == 2) ? (newNeighbors.ElementAt(1).index == n) : true)
