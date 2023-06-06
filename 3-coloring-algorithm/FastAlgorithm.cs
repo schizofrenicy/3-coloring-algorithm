@@ -101,7 +101,7 @@ namespace _3_coloring_algorithm
                     var neighbors = csp.VertexConstraints(n, c);
 
                     if (neighbors.Count() == 3) continue;
-                    if (neighbors.Count() == 2 || neighbors.ElementAt(0).index != neighbors.ElementAt(1).index) continue;
+                    if (neighbors.Count() == 2 && neighbors.ElementAt(0).index != neighbors.ElementAt(1).index) continue;
                     if (neighbors.Count() == 0) continue; // will be dealt with in lemma 4
 
                     int nextNodeIndex = neighbors.ElementAt(0).index;
