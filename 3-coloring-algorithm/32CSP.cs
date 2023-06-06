@@ -184,5 +184,13 @@ namespace _3_coloring_algorithm
 
             return true;
         }
+
+        public bool IsConstrained((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
+        {
+            int v1RealIndex = v1.index * a + (int)v1.color;
+            int v2RealIndex = v2.index * a + (int)v2.color;
+
+            return g.ContainsEdge(new SUndirectedEdge<int>(v1RealIndex, v2RealIndex)) || g.ContainsEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex));
+        }
     }
 }
