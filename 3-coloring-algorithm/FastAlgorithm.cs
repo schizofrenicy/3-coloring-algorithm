@@ -4,10 +4,10 @@ namespace _3_coloring_algorithm
 {
     static class FastAlgorithm
     {
-        static int[] colors = Array.Empty<int>();
         public static bool Fast3Coloring(UndirectedGraph<int, SUndirectedEdge<int>> g, out int[] colorsResult)
         {
             var csp = new _32CSP(g);
+
             colorsResult = new int[g.VertexCount];
             Array.Fill(colorsResult, -1);
 
@@ -28,7 +28,47 @@ namespace _3_coloring_algorithm
                 // wywołujemy rekurencyjnie obie (albo więcej) kopii (colors też jest kopią)
                 // na koniec jakoś te wyniki łączymy i zwracamy
             }
+
+            if (Lemma4(csp, out int node, out ColorEnum? color))
+            {
+                colors[node] = (int)color!;
+                csp.RemoveNode(node);
+                return Fast3ColoringRecursive(csp, colors);
+            }
+
             colors = null;
+            return false;
+        }
+
+        static bool Lemma4(_32CSP csp, out int node, out ColorEnum? color)
+        {
+            var constraints = csp.Constraints();
+            var nodes = csp.Nodes();
+
+            foreach (var n in nodes)
+            {
+                var colors = csp.NodeColors(n);
+                foreach (var col in colors)
+                {
+                    bool isInConstraint = false;
+                    foreach (var c in constraints)
+                    {
+                        if ((c.v1.index == n && c.v1.color == col) || (c.v2.index == n && c.v2.color == col))
+                        {
+                            isInConstraint = true;
+                            break;
+                        }
+                    }
+                    if (!isInConstraint)
+                    {
+                        node = n;
+                        color = col;
+                        return true;
+                    }
+                }
+            }
+            node = -1;
+            color = null;
             return false;
         }
     }
