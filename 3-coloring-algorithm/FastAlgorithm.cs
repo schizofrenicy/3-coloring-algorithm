@@ -11,10 +11,10 @@ namespace _3_coloring_algorithm
             colorsResult = new int[g.VertexCount];
             Array.Fill(colorsResult, -1);
 
-            return Fast3ColoringRecursive(csp, colorsResult);
+            return _32CSPRecursive(csp, colorsResult);
         }
 
-        static bool Fast3ColoringRecursive(_32CSP csp, int[] colors)
+        static bool _32CSPRecursive(_32CSP csp, int[] colors)
         {
             //if (true) // sprawdzanie kolejnych warunków do reguł redukcyjnych
             //{
@@ -47,7 +47,7 @@ namespace _3_coloring_algorithm
 
                 csp.RemoveNode(node);
 
-                return Fast3ColoringRecursive(csp, colors);
+                return _32CSPRecursive(csp, colors);
             }
             if (Lemma2(csp, out node, out ColorEnum? color, out int node2, out ColorEnum? color2))
             {
@@ -55,29 +55,72 @@ namespace _3_coloring_algorithm
                 csp.RemoveNode(node);
                 colors[node2] = (int)color2!;
                 csp.RemoveNode(node2);
-                return Fast3ColoringRecursive(csp, colors);
+                return _32CSPRecursive(csp, colors);
             }
             if (Lemma3(csp, out node, out color))
             {
                 csp.RemoveVertex(node, (ColorEnum)color!);
-                return Fast3ColoringRecursive(csp, colors);
+                return _32CSPRecursive(csp, colors);
             }
             if (Lemma4(csp, out node, out color))
             {
                 colors[node] = (int)color!;
                 csp.RemoveNode(node);
-                return Fast3ColoringRecursive(csp, colors);
+                return _32CSPRecursive(csp, colors);
             }
             if (Lemma5(csp, out node, out color))
             {
                 csp.RemoveVertex(node, (ColorEnum)color!);
-                return Fast3ColoringRecursive(csp, colors);
+                return _32CSPRecursive(csp, colors);
             }
-            
-            colors = null;
+
+            _42CSP csp2 = new _42CSP(csp);
+            return _42CSPRecursive(csp2, colors);
+        }
+
+        static bool _42CSPRecursive(_42CSP csp, int[] colors)
+        {
+            ColorEnum? color;
+
+            if (Lemma1(csp, out int node))
+            {
+                var col = csp.NodeColors(node);
+                var constraints1 = csp.VertexConstraints(node, col.ElementAt(0));
+                var constraints2 = csp.VertexConstraints(node, col.ElementAt(1));
+
+                foreach (var c1 in constraints1)
+                {
+                    foreach (var c2 in constraints2)
+                    {
+                        if (c1.index != c2.index)
+                        {
+                            csp.AddConstraint(c1, c2);
+                        }
+                    }
+                }
+
+                csp.RemoveNode(node);
+
+                return _42CSPRecursive(csp, colors);
+            }
+            // LEMMA 2
+            if (Lemma3(csp, out node, out color))
+            {
+                csp.RemoveVertex(node, (ColorEnum)color!);
+                return _42CSPRecursive(csp, colors);
+            }
+            if (Lemma4(csp, out node, out color))
+            {
+                colors[node] = (int)color!;
+                csp.RemoveNode(node);
+                return _42CSPRecursive(csp, colors);
+            }
+            // LEMMA 5
+
             return false;
         }
-      
+
+
         static bool Lemma1(CSP csp, out int node)
         {
             node = -1;

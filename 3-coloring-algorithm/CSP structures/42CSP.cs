@@ -9,6 +9,9 @@ namespace _3_coloring_algorithm
             get { return 4; }
         }
 
-        public _42CSP(UndirectedGraph<int, SUndirectedEdge<int>> graph) : base(graph) { }
+        public _42CSP(_32CSP csp) 
+        {
+            
+        }
     }
 }
