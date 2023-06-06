@@ -22,18 +22,18 @@ namespace _3_coloring_algorithm
 
         static bool Fast3ColoringRecursive(_32CSP csp, int[] colors)
         {
-            if (true) // sprawdzanie kolejnych warunków do reguł redukcyjnych
-            {
-                // logika usunięcia wierzchołków itp. - usuwmay na csp, nie na kopii
-                // return Fast3ColoringRecursive(csp, colors) - tutaj działamy na oryginale, zarówno csp, jak i colors
-            }
-            if (true) // kolejny warunek, WAŻNE - IF A NIE ELSE IF
-            {
-                // jeżeli jest to warunek do reguły branchingu, to robimy nową kopię csp (2 albo więcej)
-                // na każdej usuwamy to czego nie chcemy (NA KOPIACH)
-                // wywołujemy rekurencyjnie obie (albo więcej) kopii (colors też jest kopią)
-                // na koniec jakoś te wyniki łączymy i zwracamy
-            }
+            //if (true) // sprawdzanie kolejnych warunków do reguł redukcyjnych
+            //{
+            //    // logika usunięcia wierzchołków itp. - usuwmay na csp, nie na kopii
+            //    // return Fast3ColoringRecursive(csp, colors) - tutaj działamy na oryginale, zarówno csp, jak i colors
+            //}
+            //if (true) // kolejny warunek, WAŻNE - IF A NIE ELSE IF
+            //{
+            //    // jeżeli jest to warunek do reguły branchingu, to robimy nową kopię csp (2 albo więcej)
+            //    // na każdej usuwamy to czego nie chcemy (NA KOPIACH)
+            //    // wywołujemy rekurencyjnie obie (albo więcej) kopii (colors też jest kopią)
+            //    // na koniec jakoś te wyniki łączymy i zwracamy
+            //}
             if (Lemma1(csp, out int node))
             {
                 var col = csp.NodeColors(node);
@@ -162,7 +162,7 @@ namespace _3_coloring_algorithm
                     {
                         foreach (var c in constraints)
                         {
-                            if (csp.IsConstrained((c.index, c.color), (n, (ColorEnum)j)))
+                            if (csp.IsConstrained(c, (n, (ColorEnum)j)))
                             {
                                 node = n;
                                 color = (ColorEnum)j;
