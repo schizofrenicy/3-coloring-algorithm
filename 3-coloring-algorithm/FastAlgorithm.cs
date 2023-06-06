@@ -49,7 +49,15 @@ namespace _3_coloring_algorithm
 
                 return Fast3ColoringRecursive(csp, colors);
             }
-            if (Lemma4(csp, out node, out ColorEnum? color))
+            if (Lemma2(csp, out node, out ColorEnum? color, out int node2, out ColorEnum? color2))
+            {
+                colors[node] = (int)color!;
+                csp.RemoveNode(node);
+                colors[node2] = (int)color2!;
+                csp.RemoveNode(node2);
+                return Fast3ColoringRecursive(csp, colors);
+            }
+            if (Lemma4(csp, out node, out color))
             {
                 colors[node] = (int)color!;
                 csp.RemoveNode(node);
@@ -65,20 +73,68 @@ namespace _3_coloring_algorithm
             return false;
         }
       
-        static bool Lemma1(_32CSP csp, out int index)
+        static bool Lemma1(_32CSP csp, out int node)
         {
-            index = -1;
+            node = -1;
 
             var nodes = csp.Nodes();
             foreach(var n in nodes)
             {
                 if (csp.NodeColors(n).Count() == 2)
                 {
-                    index = n;
+                    node = n;
                     return true;
                 }
             }
           
+            return false;
+        }
+
+        static bool Lemma2(_32CSP csp, out int node, out ColorEnum? color1, out int node2, out ColorEnum? color2)
+        { 
+            var nodes = csp.Nodes();
+            foreach (var n in nodes)
+            {
+                var colors = csp.NodeColors(n);
+                foreach (var c in colors)
+                {
+                    var neighbors = csp.VertexConstraints(n, c);
+
+                    if (neighbors.Count() >= 3) continue;
+                    if (neighbors.Count() == 2 && neighbors.ElementAt(0).index != neighbors.ElementAt(1).index) continue;
+                    if (neighbors.Count() == 0) continue; // will be dealt with in lemma 4
+
+                    int nextNodeIndex = neighbors.ElementAt(0).index;
+                    var neighborColors = csp.NodeColors(nextNodeIndex);
+
+                    foreach(var col in neighborColors)
+                    {
+                        if (csp.IsConstrained((n, c), (nextNodeIndex, col))) continue;
+
+                        var newNeighbors = csp.VertexConstraints(nextNodeIndex, col);
+
+                        if (newNeighbors.Count() >= 3) continue;
+                        if (newNeighbors.Count() == 0) continue; // will be dealt with in lemma 4
+
+                        if (newNeighbors.ElementAt(0).index == n && (newNeighbors.Count() == 2) ? (newNeighbors.ElementAt(1).index == n) : true)
+                        {
+                            if (newNeighbors.ElementAt(0).color != c && (newNeighbors.Count() == 2) ? (newNeighbors.ElementAt(1).color != c) : true)
+                            {
+                                node = n;
+                                color1 = c;
+                                node2 = nextNodeIndex;
+                                color2 = col;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            node = -1;
+            color1 = null;
+            node2 = -1;
+            color2 = null;
             return false;
         }
 
