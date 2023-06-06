@@ -1,5 +1,4 @@
 ﻿using QuikGraph;
-using System.Diagnostics.Contracts;
 
 namespace _3_coloring_algorithm
 {
