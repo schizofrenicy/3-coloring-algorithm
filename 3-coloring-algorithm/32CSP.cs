@@ -37,6 +37,11 @@ namespace _3_coloring_algorithm
         public IEnumerable<int> Nodes()
         {
             var vertices = g.Vertices;
+            if (vertices.Count() == 0)
+            {
+                return Enumerable.Empty<int>();
+            }
+
             int vertexMaxIndx = vertices.Max();
             int possibleNodes = (vertexMaxIndx / a) + 1;
 

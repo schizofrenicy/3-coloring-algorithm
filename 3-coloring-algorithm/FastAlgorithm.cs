@@ -1,4 +1,5 @@
 ﻿using QuikGraph;
+using System.Diagnostics.Contracts;
 
 namespace _3_coloring_algorithm
 {
@@ -16,27 +17,27 @@ namespace _3_coloring_algorithm
 
         static bool Fast3ColoringRecursive(_32CSP csp, int[] colors)
         {
-            if (true) // sprawdzanie kolejnych warunków do reguł redukcyjnych
-            {
-                // logika usunięcia wierzchołków itp. - usuwmay na csp, nie na kopii
-                // return Fast3ColoringRecursive(csp, colors) - tutaj działamy na oryginale, zarówno csp, jak i colors
-            }
-            if (true) // kolejny warunek, WAŻNE - IF A NIE ELSE IF
-            {
-                // jeżeli jest to warunek do reguły branchingu, to robimy nową kopię csp (2 albo więcej)
-                // na każdej usuwamy to czego nie chcemy (NA KOPIACH)
-                // wywołujemy rekurencyjnie obie (albo więcej) kopii (colors też jest kopią)
-                // na koniec jakoś te wyniki łączymy i zwracamy
-            }
+            //if (true) // sprawdzanie kolejnych warunków do reguł redukcyjnych
+            //{
+            //    // logika usunięcia wierzchołków itp. - usuwmay na csp, nie na kopii
+            //    // return Fast3ColoringRecursive(csp, colors) - tutaj działamy na oryginale, zarówno csp, jak i colors
+            //}
+            //if (true) // kolejny warunek, WAŻNE - IF A NIE ELSE IF
+            //{
+            //    // jeżeli jest to warunek do reguły branchingu, to robimy nową kopię csp (2 albo więcej)
+            //    // na każdej usuwamy to czego nie chcemy (NA KOPIACH)
+            //    // wywołujemy rekurencyjnie obie (albo więcej) kopii (colors też jest kopią)
+            //    // na koniec jakoś te wyniki łączymy i zwracamy
+            //}
             if (Lemma1(csp, out int node))
             {
                 var col = csp.NodeColors(node);
                 var constraints1 = csp.VertexConstraints(node, col.ElementAt(0));
                 var constraints2 = csp.VertexConstraints(node, col.ElementAt(1));
 
-                foreach(var c1 in constraints1)
+                foreach (var c1 in constraints1)
                 {
-                    foreach(var c2 in constraints2)
+                    foreach (var c2 in constraints2)
                     {
                         if (c1.index != c2.index)
                         {
@@ -55,6 +56,11 @@ namespace _3_coloring_algorithm
                 csp.RemoveNode(node);
                 colors[node2] = (int)color2!;
                 csp.RemoveNode(node2);
+                return Fast3ColoringRecursive(csp, colors);
+            }
+            if (Lemma3(csp, out node, out color))
+            {
+                csp.RemoveVertex(node, (ColorEnum)color!);
                 return Fast3ColoringRecursive(csp, colors);
             }
             if (Lemma4(csp, out node, out color))
@@ -135,6 +141,35 @@ namespace _3_coloring_algorithm
             color1 = null;
             node2 = -1;
             color2 = null;
+            return false;
+        }
+
+        static bool Lemma3(_32CSP csp, out int node, out ColorEnum? color)
+        {
+            var nodes = csp.Nodes();
+            foreach (var n in nodes)
+            {
+                var colors = csp.NodeColors(n);
+                for (int i = 0; i < colors.Count(); i++)
+                {
+                    var constraints = csp.VertexConstraints(n, (ColorEnum)i);
+                    for (int j = i + 1; j < colors.Count(); j++)
+                    {
+                        foreach (var c in constraints)
+                        {
+                            if (csp.IsConstrained(c, (n, (ColorEnum)j)))
+                            {
+                                node = n;
+                                color = (ColorEnum)j;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            node = -1;
+            color = null;
             return false;
         }
 
