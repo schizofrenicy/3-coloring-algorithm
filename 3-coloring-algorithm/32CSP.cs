@@ -34,14 +34,14 @@ namespace _3_coloring_algorithm
             }
         }
 
-        public IEnumerable<int> Vertices()
+        public IEnumerable<int> Nodes()
         {
             var vertices = g.Vertices;
             int vertexMaxIndx = vertices.Max();
-            int possibleVertices = (vertexMaxIndx / a) + 1;
+            int possibleNodes = (vertexMaxIndx / a) + 1;
 
             List<int> toReturn = new();
-            for (int i = 0; i < possibleVertices; i++)
+            for (int i = 0; i < possibleNodes; i++)
             {
                 for (int j = 0; j < a; j++)
                 {
@@ -56,18 +56,18 @@ namespace _3_coloring_algorithm
             return toReturn;
         }
 
-        public int VertexCount()
+        public int NodesCount()
         {
-            return Vertices().Count();
+            return Nodes().Count();
         }
 
-        public IEnumerable<ColorEnum> VertexColors(int vertex)
+        public IEnumerable<ColorEnum> NodeColors(int node)
         {
             List<ColorEnum> toReturn = new();
 
             for (int i = 0; i < a; i++)
             {
-                if (g.Vertices.Contains(vertex * a + i))
+                if (g.Vertices.Contains(node * a + i))
                 {
                     toReturn.Add((ColorEnum)i);
                 }
@@ -76,7 +76,7 @@ namespace _3_coloring_algorithm
             return toReturn;
         }
 
-        public IEnumerable<(int index, ColorEnum color)> VertexNeighbors(int index, ColorEnum color)
+        public IEnumerable<(int index, ColorEnum color)> VertexConstraints(int index, ColorEnum color)
         {
             int vertexRealIndex = index * a + (int)color;
 
@@ -98,7 +98,7 @@ namespace _3_coloring_algorithm
             return toReturn;
         }
 
-        public bool RemoveEdge((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
+        public bool RemoveConstraint((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
         {
             int v1RealIndex = v1.index * a + (int)v1.color;
             int v2RealIndex = v2.index * a + (int)v2.color;
@@ -106,7 +106,7 @@ namespace _3_coloring_algorithm
             return g.RemoveEdge(new SUndirectedEdge<int>(v1RealIndex, v2RealIndex)) || g.RemoveEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex));
         }
 
-        public bool AddEdge((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
+        public bool AddConstraint((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
         {
             int v1RealIndex = v1.index * a + (int)v1.color;
             int v2RealIndex = v2.index * a + (int)v2.color;
@@ -133,11 +133,11 @@ namespace _3_coloring_algorithm
         public bool RemoveVertex(int index, ColorEnum color)
         {
             int vertexRealIndex = index * a + (int)color;
-            var neighbors = VertexNeighbors(index, color);
+            var neighbors = VertexConstraints(index, color);
 
             foreach (var n in neighbors)
             {
-                if (!RemoveEdge((index, color), n))
+                if (!RemoveConstraint((index, color), n))
                 {
                     throw new Exception("Unable to remove edge!");
                 }
@@ -150,18 +150,18 @@ namespace _3_coloring_algorithm
         {
             List<((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)> toReturn = new();
 
-            var verticies = Vertices();
-            foreach (var v in verticies)
+            var nodes = Nodes();
+            foreach (var no in nodes)
             {
-                var colors = VertexColors(v);
+                var colors = NodeColors(no);
                 foreach (var c in colors)
                 {
-                    var neighbors = VertexNeighbors(v, c);
+                    var neighbors = VertexConstraints(no, c);
                     foreach (var n in neighbors)
                     {
-                        if (v < n.index)
+                        if (no < n.index)
                         {
-                            toReturn.Add(((v, c), n));
+                            toReturn.Add(((no, c), n));
                         }
                     }
                 }
@@ -172,7 +172,7 @@ namespace _3_coloring_algorithm
 
         public bool RemoveNode(int index)
         {
-            var colors = VertexColors(index);
+            var colors = NodeColors(index);
 
             foreach (var c in colors)
             {
