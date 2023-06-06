@@ -28,15 +28,52 @@ namespace _3_coloring_algorithm
                 // wywołujemy rekurencyjnie obie (albo więcej) kopii (colors też jest kopią)
                 // na koniec jakoś te wyniki łączymy i zwracamy
             }
+            if (Lemma1(csp, out int index))
+            {
+                var col = csp.NodeColors(index);
+                var constraints1 = csp.VertexConstraints(index, col.ElementAt(0));
+                var constraints2 = csp.VertexConstraints(index, col.ElementAt(1));
 
+                foreach(var c1 in constraints1)
+                {
+                    foreach(var c2 in constraints2)
+                    {
+                        if (c1.index != c2.index)
+                        {
+                            csp.AddConstraint(c1, c2);
+                        }
+                    }
+                }
+
+                csp.RemoveNode(index);
+
+                return Fast3ColoringRecursive(csp, colors);
+            }
             if (Lemma4(csp, out int node, out ColorEnum? color))
             {
                 colors[node] = (int)color!;
                 csp.RemoveNode(node);
                 return Fast3ColoringRecursive(csp, colors);
             }
-
+            
             colors = null;
+            return false;
+        }
+      
+        static bool Lemma1(_32CSP csp, out int index)
+        {
+            index = -1;
+
+            var nodes = csp.Nodes();
+            foreach(var n in nodes)
+            {
+                if (csp.NodeColors(n).Count() == 2)
+                {
+                    index = n;
+                    return true;
+                }
+            }
+          
             return false;
         }
 
@@ -60,7 +97,6 @@ namespace _3_coloring_algorithm
             }
             node = -1;
             color = null;
-            return false;
         }
     }
 }
