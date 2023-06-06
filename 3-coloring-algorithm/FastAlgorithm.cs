@@ -97,6 +97,7 @@ namespace _3_coloring_algorithm
             }
             node = -1;
             color = null;
+            return false;
         }
     }
 }
