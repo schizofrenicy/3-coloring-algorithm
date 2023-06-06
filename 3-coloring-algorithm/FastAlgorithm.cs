@@ -7,6 +7,7 @@ namespace _3_coloring_algorithm
         public static bool Fast3Coloring(UndirectedGraph<int, SUndirectedEdge<int>> g, out int[] colorsResult)
         {
             var csp = new _32CSP(g);
+
             colorsResult = new int[g.VertexCount];
             Array.Fill(colorsResult, -1);
 
@@ -48,10 +49,17 @@ namespace _3_coloring_algorithm
 
                 return Fast3ColoringRecursive(csp, colors);
             }
+            if (Lemma4(csp, out int node, out ColorEnum? color))
+            {
+                colors[node] = (int)color!;
+                csp.RemoveNode(node);
+                return Fast3ColoringRecursive(csp, colors);
+            }
+            
             colors = null;
             return false;
         }
-
+      
         static bool Lemma1(_32CSP csp, out int index)
         {
             index = -1;
@@ -65,8 +73,30 @@ namespace _3_coloring_algorithm
                     return true;
                 }
             }
-
+          
             return false;
+        }
+
+        static bool Lemma4(_32CSP csp, out int node, out ColorEnum? color)
+        {
+            var nodes = csp.Nodes();
+            foreach (var n in nodes)
+            {
+                var colors = csp.NodeColors(n);
+                foreach (var col in colors)
+                {
+                    var contraints = csp.VertexConstraints(n, col);
+
+                    if (contraints.Count() == 0)
+                    {
+                        node = n;
+                        color = col;
+                        return true;
+                    }
+                }
+            }
+            node = -1;
+            color = null;
         }
     }
 }

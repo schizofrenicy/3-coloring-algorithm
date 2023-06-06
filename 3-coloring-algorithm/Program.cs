@@ -54,27 +54,7 @@
             //}
 
             var g = GraphGenerator.Generate(4, 100);
-
-            var csp = new _32CSP(g);
-            var vertices = csp.Vertices();
-            var vertexCount = csp.VertexCount();
-            var neighbors = csp.VertexNeighbors(0, (ColorEnum)0);
-            var neighbors2 = csp.VertexNeighbors(0, (ColorEnum)1);
-            var neighbors3 = csp.VertexNeighbors(1, (ColorEnum)0);
-            var removeEdge1 = csp.RemoveEdge((0, (ColorEnum)0), (1, (ColorEnum)0));
-            var neighbors4 = csp.VertexNeighbors(0, (ColorEnum)0);
-            var removeEdge2 = csp.RemoveEdge((0, (ColorEnum)0), (0, (ColorEnum)0));
-            var neighbors5 = csp.VertexNeighbors(0, (ColorEnum)0);
-            var removeEdge3 = csp.RemoveEdge((1, (ColorEnum)0), (0, (ColorEnum)0));
-            var neighbors6 = csp.VertexNeighbors(0, (ColorEnum)0);
-            var addEdge1 = csp.AddEdge((0, (ColorEnum)0), (1, (ColorEnum)0));
-            var neighbors7 = csp.VertexNeighbors(0, (ColorEnum)0);
-            var addEdge2 = csp.AddEdge((0, (ColorEnum)0), (0, (ColorEnum)0));
-            var neighbors8 = csp.VertexNeighbors(0, (ColorEnum)0);
-            var addEdge3 = csp.AddEdge((1, (ColorEnum)0), (0, (ColorEnum)0));
-            var neighbors9 = csp.VertexNeighbors(0, (ColorEnum)0);
-            var removeVertex1 = csp.RemoveVertex(0, (ColorEnum)0);
-            var neighbors10 = csp.VertexNeighbors(0, (ColorEnum)0);
+            FastAlgorithm.Fast3Coloring(g, out int[] result);
         }
     }
 }
