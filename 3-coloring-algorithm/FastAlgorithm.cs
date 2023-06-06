@@ -107,10 +107,9 @@ namespace _3_coloring_algorithm
                     int nextNodeIndex = neighbors.ElementAt(0).index;
                     var neighborColors = csp.NodeColors(nextNodeIndex);
 
-                    List<ColorEnum> newColors = neighborColors.Where(x => x != neighbors.ElementAt(0).color && (neighbors.Count() == 2) ? (x != neighbors.ElementAt(1).color) : true).ToList();
-                    foreach(var col in newColors)
+                    foreach(var col in neighborColors)
                     {
-                        if (col == c) continue;
+                        if (csp.IsConstrained((n, c), (nextNodeIndex, col))) continue;
 
                         var newNeighbors = csp.VertexConstraints(nextNodeIndex, col);
 
@@ -119,11 +118,14 @@ namespace _3_coloring_algorithm
 
                         if (newNeighbors.ElementAt(0).index == n && (newNeighbors.Count() == 2) ? (newNeighbors.ElementAt(1).index == n) : true)
                         {
-                            node = n;
-                            color1 = c;
-                            node2 = nextNodeIndex;
-                            color2 = col;
-                            return true;
+                            if (newNeighbors.ElementAt(0).color != c && (newNeighbors.Count() == 2) ? (newNeighbors.ElementAt(1).color != c) : true)
+                            {
+                                node = n;
+                                color1 = c;
+                                node2 = nextNodeIndex;
+                                color2 = col;
+                                return true;
+                            }
                         }
                     }
                 }
