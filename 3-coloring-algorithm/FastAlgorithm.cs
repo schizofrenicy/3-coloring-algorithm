@@ -51,9 +51,9 @@ namespace _3_coloring_algorithm
             }
             if (Lemma2(csp, out node, out ColorEnum? color, out int node2, out ColorEnum? color2))
             {
-                colors[node] = (int)color!;
+                ColorVertices((node, (ColorEnum)color!), csp, colors);
                 csp.RemoveNode(node);
-                colors[node2] = (int)color2!;
+                ColorVertices((node2, (ColorEnum)color2!), csp, colors);
                 csp.RemoveNode(node2);
                 return _32CSPRecursive(csp, colors);
             }
@@ -64,7 +64,7 @@ namespace _3_coloring_algorithm
             }
             if (Lemma4(csp, out node, out color))
             {
-                colors[node] = (int)color!;
+                ColorVertices((node, (ColorEnum)color!), csp, colors);
                 csp.RemoveNode(node);
                 return _32CSPRecursive(csp, colors);
             }
@@ -103,9 +103,9 @@ namespace _3_coloring_algorithm
             }
             if (Lemma2(csp, out node, out ColorEnum? color, out int node2, out ColorEnum? color2))
             {
-                colors[node] = (int)color!;
+                ColorVertices((node, (ColorEnum)color!), csp, colors);
                 csp.RemoveNode(node);
-                colors[node2] = (int)color2!;
+                ColorVertices((node2, (ColorEnum)color2!), csp, colors);
                 csp.RemoveNode(node2);
                 return _42CSPRecursive(csp, colors);
             }
@@ -116,7 +116,7 @@ namespace _3_coloring_algorithm
             }
             if (Lemma4(csp, out node, out color))
             {
-                colors[node] = (int)color!;
+                ColorVertices((node, (ColorEnum)color!), csp, colors);
                 csp.RemoveNode(node);
                 return _42CSPRecursive(csp, colors);
             }
@@ -137,7 +137,7 @@ namespace _3_coloring_algorithm
                 {
                     csp1.RemoveVertex(n);
                 }
-                colors1[node2] = (int)color!;
+                ColorVertices((node2, (ColorEnum)color!), csp1, colors1);
                 csp1.RemoveNode(node2);
 
                 var result = _42CSPRecursive(csp1, colors1);
@@ -152,7 +152,7 @@ namespace _3_coloring_algorithm
                 var csp2 = (_42CSP)csp.Clone();
                 var colors2 = (int[])colors.Clone();
                 csp2.RemoveVertex(node2, (ColorEnum)color!);
-                colors2[node] = (int)color!;
+                ColorVertices((node, (ColorEnum)color!), csp2, colors2);
                 csp2.RemoveNode(node);
 
                 result = _42CSPRecursive(csp2, colors2);
@@ -174,7 +174,7 @@ namespace _3_coloring_algorithm
             node = -1;
 
             var nodes = csp.Nodes();
-            foreach(var n in nodes)
+            foreach (var n in nodes)
             {
                 if (csp.NodeColors(n).Count() == 2)
                 {
@@ -182,7 +182,7 @@ namespace _3_coloring_algorithm
                     return true;
                 }
             }
-          
+
             return false;
         }
 
@@ -211,7 +211,7 @@ namespace _3_coloring_algorithm
                     if (stop) continue;
                     var neighborColors = csp.NodeColors(nextNodeIndex);
 
-                    foreach(var col in neighborColors)
+                    foreach (var col in neighborColors)
                     {
                         if (csp.IsConstrained((n, c), (nextNodeIndex, col))) continue;
 
@@ -372,6 +372,21 @@ namespace _3_coloring_algorithm
             for (int i = 0; i < arr1.Length; i++)
             {
                 arr1[i] = arr2[i];
+            }
+        }
+
+        static void ColorVertices((int index, ColorEnum color) vertex, CSP csp, int[] colors)
+        {
+            var result = csp.GetFinalColors(vertex);
+
+            foreach (var r in result)
+            {
+                if (colors[r.index] != -1)
+                {
+                    throw new Exception("Trying to color vertex that is already colored!");
+                }
+
+                colors[r.index] = (int)r.color;
             }
         }
     }
