@@ -133,5 +133,31 @@
 
             return toReturn;
         }
+
+        public override List<(int index, ColorEnum color)> GetFinalColors((int index, ColorEnum color) vertex)
+        {
+            if (!IsDualNode(vertex.index))
+            {
+                return new List<(int index, ColorEnum color)>() { vertex };
+            }
+            
+            var dualNode = dualNodeInfo[vertex.index];
+
+            List<(int index, ColorEnum color)> colors = new()
+            {
+                dualNode.prevColors[(int)vertex.color]
+            };
+            
+            if (colors.ElementAt(0).index == vertex.index)
+            {
+                colors.Add((dualNode.j, (ColorEnum)dualNode.constraintColor!));
+            }
+            else
+            {
+                colors.Add((vertex.index, (ColorEnum)dualNode.constraintColor!));
+            }
+
+            return colors;
+        }
     }
 }

@@ -40,5 +40,10 @@ namespace _3_coloring_algorithm
                 }
             }
         }
+
+        public override List<(int index, ColorEnum color)> GetFinalColors((int index, ColorEnum color) vertex)
+        {
+            return new List<(int index, ColorEnum color)>() { vertex };
+        }
     }
 }

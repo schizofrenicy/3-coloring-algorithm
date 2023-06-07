@@ -180,5 +180,7 @@ namespace _3_coloring_algorithm
 
             return g.ContainsEdge(new SUndirectedEdge<int>(v1RealIndex, v2RealIndex)) || g.ContainsEdge(new SUndirectedEdge<int>(v2RealIndex, v1RealIndex));
         }
+
+        public abstract List<(int index, ColorEnum color)> GetFinalColors((int index, ColorEnum color) vertex);
     }
 }
