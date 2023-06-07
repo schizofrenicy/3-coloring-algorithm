@@ -290,5 +290,40 @@ namespace _3_coloring_algorithm
             color = null;
             return false;
         }
+
+        static bool Lemma7(_42CSP csp, out int node1, out ColorEnum? color1, out int node2, out ColorEnum? color2)
+        {
+            var nodes = csp.Nodes();
+
+            foreach (var n in nodes)
+            {
+                var colors = csp.NodeColors(n);
+
+                foreach (var col in colors)
+                {
+                    var constraints = csp.VertexConstraints(n, col);
+                    if (constraints.Count() != 1) continue;
+                    var neighbour = constraints.ElementAt(0);
+
+                    if (neighbour.color != col) continue;
+
+                    var wConstraints = csp.VertexConstraints(neighbour.index, neighbour.color);
+                    if (wConstraints.Count() > 1)
+                    {
+                        node1 = n;
+                        color1 = col;
+                        node2 = neighbour.index;
+                        color2 = neighbour.color;
+                        return true;
+                    }
+                }
+            }
+
+            node1 = -1;
+            color1 = null;
+            node2 = -1;
+            color2 = null;
+            return false;
+        }
     }
 }
