@@ -24,11 +24,15 @@
             return cp;
         }
 
-        public _42CSP(_32CSP csp) 
+        public _42CSP(_32CSP csp)
         {
             var nodes = csp.Nodes();
+
             dualNodeInfo = new _42CSPDualNode[nodes.Count()];
-            Array.Fill(dualNodeInfo, new _42CSPDualNode());
+            for (int i = 0; i < dualNodeInfo.Length; i++)
+            {
+                dualNodeInfo[i] = new _42CSPDualNode();
+            }
 
             foreach (var n in nodes)
             {
@@ -54,9 +58,16 @@
             }
         }
 
+        public bool AddVertex(int index, ColorEnum color)
+        {
+            int vertexRealIndex = index * NodeSize + (int)color;
+
+            return g.AddVertex(vertexRealIndex);
+        }
+
         public bool IsDualNode(int node)
         {
-            return dualNodeInfo[node] != null;
+            return dualNodeInfo[node].constraintColor != null;
         }
 
         public bool MergeIntoDualNode(int node1, int node2, ColorEnum color)
@@ -79,6 +90,11 @@
 
             List<ColorEnum> possibleColors = new List<ColorEnum>() { ColorEnum.A, ColorEnum.B, ColorEnum.C, ColorEnum.D };
 
+            if (!AddVertex(node1, ColorEnum.D))
+            {
+                throw new Exception("Unable to create forth vertex in 32CSP node!");
+            }
+
             foreach (var c1 in colors1)
             {
                 if (c1 == color) continue;
@@ -88,15 +104,17 @@
                 dualNodeInfo[node1].prevColors[(int)c1].color = c1;
             }
 
-            foreach(var c2 in colors2)
+            foreach (var c2 in colors2)
             {
+                if (c2 == color) continue;
+
                 var freeColor = possibleColors.ElementAt(0);
                 possibleColors.Remove(freeColor);
 
                 var neighbors = VertexConstraints(node2, c2);
                 foreach (var n in neighbors)
                 {
-                    if(!AddConstraint((node1, freeColor), n))
+                    if (!AddConstraint((node1, freeColor), n))
                     {
                         throw new Exception("Unable to add constraint from node2 to node1!");
                     }
@@ -140,14 +158,14 @@
             {
                 return new List<(int index, ColorEnum color)>() { vertex };
             }
-            
+
             var dualNode = dualNodeInfo[vertex.index];
 
             List<(int index, ColorEnum color)> colors = new()
             {
-                dualNode.prevColors[(int)vertex.color]
+                ((int,ColorEnum))dualNode.prevColors[(int)vertex.color]!
             };
-            
+
             if (colors.ElementAt(0).index == vertex.index)
             {
                 colors.Add((dualNode.j, (ColorEnum)dualNode.constraintColor!));

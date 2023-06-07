@@ -174,7 +174,7 @@ namespace _3_coloring_algorithm
             node = -1;
 
             var nodes = csp.Nodes();
-            foreach(var n in nodes)
+            foreach (var n in nodes)
             {
                 if (csp.NodeColors(n).Count() == 2)
                 {
@@ -182,7 +182,7 @@ namespace _3_coloring_algorithm
                     return true;
                 }
             }
-          
+
             return false;
         }
 
@@ -211,7 +211,7 @@ namespace _3_coloring_algorithm
                     if (stop) continue;
                     var neighborColors = csp.NodeColors(nextNodeIndex);
 
-                    foreach(var col in neighborColors)
+                    foreach (var col in neighborColors)
                     {
                         if (csp.IsConstrained((n, c), (nextNodeIndex, col))) continue;
 
