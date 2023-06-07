@@ -135,7 +135,7 @@ namespace _3_coloring_algorithm
                 var node2Neighbors = csp1.VertexConstraints(node2, (ColorEnum)color!);
                 foreach (var n in node2Neighbors)
                 {
-                    csp1.RemoveVertex(n.index, n.color);
+                    csp1.RemoveVertex(n);
                 }
                 colors1[node2] = (int)color!;
                 csp1.RemoveNode(node2);
@@ -346,7 +346,7 @@ namespace _3_coloring_algorithm
 
                     if (neighbour.color != col) continue;
 
-                    var wConstraints = csp.VertexConstraints(neighbour.index, neighbour.color);
+                    var wConstraints = csp.VertexConstraints(neighbour);
                     if (wConstraints.Count() > 1)
                     {
                         node = n;
