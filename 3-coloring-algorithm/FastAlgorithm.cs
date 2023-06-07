@@ -80,8 +80,6 @@ namespace _3_coloring_algorithm
 
         static bool _42CSPRecursive(_42CSP csp, int[] colors)
         {
-            ColorEnum? color;
-
             if (Lemma1(csp, out int node))
             {
                 var col = csp.NodeColors(node);
@@ -103,7 +101,14 @@ namespace _3_coloring_algorithm
 
                 return _42CSPRecursive(csp, colors);
             }
-            // LEMMA 2
+            if (Lemma2(csp, out node, out ColorEnum? color, out int node2, out ColorEnum? color2))
+            {
+                colors[node] = (int)color!;
+                csp.RemoveNode(node);
+                colors[node2] = (int)color2!;
+                csp.RemoveNode(node2);
+                return _42CSPRecursive(csp, colors);
+            }
             if (Lemma3(csp, out node, out color))
             {
                 csp.RemoveVertex(node, (ColorEnum)color!);
@@ -118,7 +123,7 @@ namespace _3_coloring_algorithm
             if (Lemma5(csp, out node, out color))
             {
                 csp.RemoveVertex(node, (ColorEnum)color!);
-                return _32CSPRecursive(csp, colors);
+                return _42CSPRecursive(csp, colors);
             }
 
             return false;
@@ -142,7 +147,7 @@ namespace _3_coloring_algorithm
             return false;
         }
 
-        static bool Lemma2(_32CSP csp, out int node, out ColorEnum? color1, out int node2, out ColorEnum? color2)
+        static bool Lemma2(CSP csp, out int node, out ColorEnum? color1, out int node2, out ColorEnum? color2)
         {
             var nodes = csp.Nodes();
             foreach (var n in nodes)
@@ -152,11 +157,19 @@ namespace _3_coloring_algorithm
                 {
                     var neighbors = csp.VertexConstraints(n, c);
 
-                    if (neighbors.Count() >= 3) continue;
-                    if (neighbors.Count() == 2 && neighbors.ElementAt(0).index != neighbors.ElementAt(1).index) continue;
+                    if (neighbors.Count() >= csp.NodeSize) continue;
                     if (neighbors.Count() == 0) continue; // will be dealt with in lemma 4
 
                     int nextNodeIndex = neighbors.ElementAt(0).index;
+                    bool stop = false;
+                    for (int i = 1; i < neighbors.Count(); i++)
+                    {
+                        if (neighbors.ElementAt(i).index != nextNodeIndex)
+                        {
+                            stop = true;
+                        }
+                    }
+                    if (stop) continue;
                     var neighborColors = csp.NodeColors(nextNodeIndex);
 
                     foreach(var col in neighborColors)
@@ -165,19 +178,23 @@ namespace _3_coloring_algorithm
 
                         var newNeighbors = csp.VertexConstraints(nextNodeIndex, col);
 
-                        if (newNeighbors.Count() >= 3) continue;
+                        if (newNeighbors.Count() >= csp.NodeSize) continue;
                         if (newNeighbors.Count() == 0) continue; // will be dealt with in lemma 4
 
-                        if (newNeighbors.ElementAt(0).index == n && (newNeighbors.Count() == 2) ? (newNeighbors.ElementAt(1).index == n) : true)
+                        bool cond = newNeighbors.ElementAt(0).index == n && newNeighbors.ElementAt(0).color != c;
+                        for (int i = 1; i < newNeighbors.Count(); i++)
                         {
-                            if (newNeighbors.ElementAt(0).color != c && (newNeighbors.Count() == 2) ? (newNeighbors.ElementAt(1).color != c) : true)
-                            {
-                                node = n;
-                                color1 = c;
-                                node2 = nextNodeIndex;
-                                color2 = col;
-                                return true;
-                            }
+                            cond &= newNeighbors.ElementAt(i).index == n && newNeighbors.ElementAt(i).color != c;
+                        }
+
+                        if (cond)
+                        {
+                            node = n;
+                            color1 = c;
+                            node2 = nextNodeIndex;
+                            color2 = col;
+                            return true;
+
                         }
                     }
                 }
