@@ -125,6 +125,45 @@ namespace _3_coloring_algorithm
                 csp.RemoveVertex(node, (ColorEnum)color!);
                 return _42CSPRecursive(csp, colors);
             }
+            // LEMMA 6
+            if (Lemma7(csp, out int node1, out node2, out color))
+            {
+                var csp1 = (_42CSP)csp.Clone();
+                var colors1 = (int[])colors.Clone();
+                // używamy koloru (w,R)
+                csp1.RemoveVertex(node1, (ColorEnum)color!);
+                var node2Neighbors = csp1.VertexConstraints(node2, (ColorEnum)color!);
+                foreach (var n in node2Neighbors)
+                {
+                    csp1.RemoveVertex(n.index, n.color);
+                }
+                colors1[node2] = (int)color!;
+                csp1.RemoveNode(node2);
+
+                var result = _42CSPRecursive(csp1, colors1);
+                if (result)
+                {
+                    RewriteArray(colors, colors1);
+                    return true;
+                }
+
+                var csp2 = (_42CSP)csp.Clone();
+                var colors2 = (int[])colors.Clone();
+                // odrzucamy kolor (w,R)
+                // wybieramy (v,R)
+                csp2.RemoveVertex(node2, (ColorEnum)color!);
+                colors2[node1] = (int)color!;
+                csp2.RemoveNode(node1);
+
+                result = _42CSPRecursive(csp2, colors2);
+                if (result)
+                {
+                    RewriteArray(colors, colors2);
+                    return true;
+                }
+
+                return false;
+            }
 
             return false;
         }
@@ -291,7 +330,7 @@ namespace _3_coloring_algorithm
             return false;
         }
 
-        static bool Lemma7(_42CSP csp, out int node1, out ColorEnum? color1, out int node2, out ColorEnum? color2)
+        static bool Lemma7(_42CSP csp, out int node1, out int node2, out ColorEnum? color)
         {
             var nodes = csp.Nodes();
 
@@ -311,19 +350,29 @@ namespace _3_coloring_algorithm
                     if (wConstraints.Count() > 1)
                     {
                         node1 = n;
-                        color1 = col;
                         node2 = neighbour.index;
-                        color2 = neighbour.color;
+                        color = neighbour.color;
                         return true;
                     }
                 }
             }
 
             node1 = -1;
-            color1 = null;
             node2 = -1;
-            color2 = null;
+            color = null;
             return false;
+        }
+
+        static void RewriteArray(int[] arr1, int[] arr2)
+        {
+            if (arr1.Length != arr2.Length)
+            {
+                throw new ArgumentException("Arrays should have same length!");
+            }
+            for (int i = 0; i < arr1.Length; i++)
+            {
+                arr1[i] = arr2[i];
+            }
         }
     }
 }
