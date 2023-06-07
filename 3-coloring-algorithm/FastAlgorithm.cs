@@ -374,5 +374,20 @@ namespace _3_coloring_algorithm
                 arr1[i] = arr2[i];
             }
         }
+
+        static void ColorVertices((int index, ColorEnum color) vertex, CSP csp, int[] colors)
+        {
+            var result = csp.GetFinalColors(vertex);
+
+            foreach (var r in result)
+            {
+                if (colors[r.index] != -1)
+                {
+                    throw new Exception("Trying to color vertex that is already colored!");
+                }
+
+                colors[r.index] = (int)r.color;
+            }
+        }
     }
 }
