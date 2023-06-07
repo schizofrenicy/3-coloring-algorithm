@@ -115,7 +115,11 @@ namespace _3_coloring_algorithm
                 csp.RemoveNode(node);
                 return _42CSPRecursive(csp, colors);
             }
-            // LEMMA 5
+            if (Lemma5(csp, out node, out color))
+            {
+                csp.RemoveVertex(node, (ColorEnum)color!);
+                return _32CSPRecursive(csp, colors);
+            }
 
             return false;
         }
