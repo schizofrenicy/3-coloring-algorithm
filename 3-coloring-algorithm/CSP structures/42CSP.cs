@@ -55,11 +55,11 @@
 
             if (colors1.Count() != 3 || colors2.Count() != 3)
             {
-                throw new Exception("It was not supposed to happen :(");
+                throw new Exception("Nodes in MergeIntoDualNode don't have 3 colors avaible!");
             }
 
             dualNodeInfo[node1].j = node2;
-            dualNodeInfo[node1].color = color;
+            dualNodeInfo[node1].constrainColor = color;
 
             List<ColorEnum> possibleColors = new List<ColorEnum>() { ColorEnum.A, ColorEnum.B, ColorEnum.C, ColorEnum.D };
 
@@ -82,17 +82,17 @@
                 {
                     if(!AddConstraint((node1, freeColor), n))
                     {
-                        throw new Exception("It was not supposed to happen :(");
+                        throw new Exception("Unable to add constraint from node2 to node1!");
                     }
                 }
 
-                dualNodeInfo[node1].prevColors[(int)c2].node = node2;
-                dualNodeInfo[node1].prevColors[(int)c2].color = freeColor;
+                dualNodeInfo[node1].prevColors[(int)freeColor].node = node2;
+                dualNodeInfo[node1].prevColors[(int)freeColor].color = c2;
             }
 
             if (possibleColors.Count() != 0)
             {
-                throw new Exception("It was not supposed to happen :(");
+                throw new Exception("After executing all the logic, there is still a possible color to be used!");
             }
 
             return RemoveNode(node2);

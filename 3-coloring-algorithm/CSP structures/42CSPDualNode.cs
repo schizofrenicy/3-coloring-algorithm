@@ -4,6 +4,6 @@
     {
         public (int node, ColorEnum color)[] prevColors = new (int node, ColorEnum color)[4];
         public int j { get; set; }
-        public ColorEnum color { get; set; }
+        public ColorEnum constrainColor { get; set; }
     }
 }
