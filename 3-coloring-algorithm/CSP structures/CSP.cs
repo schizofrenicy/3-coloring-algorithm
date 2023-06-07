@@ -76,6 +76,11 @@ namespace _3_coloring_algorithm
             return toReturn;
         }
 
+        public IEnumerable<(int index, ColorEnum color)> VertexConstraints((int index, ColorEnum color) vertex)
+        {
+            return VertexConstraints(vertex.index, vertex.color);
+        }
+
         public bool RemoveConstraint((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)
         {
             int v1RealIndex = v1.index * NodeSize + (int)v1.color;
@@ -122,6 +127,11 @@ namespace _3_coloring_algorithm
             }
 
             return g.RemoveVertex(vertexRealIndex);
+        }
+
+        public bool RemoveVertex((int index, ColorEnum color) vertex)
+        {
+            return RemoveVertex(vertex.index, vertex.color);
         }
 
         public IEnumerable<((int index, ColorEnum color) v1, (int index, ColorEnum color) v2)> Constraints()
