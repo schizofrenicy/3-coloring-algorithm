@@ -11,8 +11,6 @@ namespace _3_coloring_algorithm
 
         public _32CSP(UndirectedGraph<int, SUndirectedEdge<int>> graph)
         {
-            g = new();
-
             for (int i = 0; i < graph.VertexCount * NodeSize; i++)
             {
                 g.AddVertex(i);
