@@ -126,12 +126,12 @@ namespace _3_coloring_algorithm
                 return _42CSPRecursive(csp, colors);
             }
             // LEMMA 6
-            if (Lemma7(csp, out int node1, out node2, out color))
+            if (Lemma7(csp, out node, out node2, out color))
             {
+                // używamy koloru (w,R)
                 var csp1 = (_42CSP)csp.Clone();
                 var colors1 = (int[])colors.Clone();
-                // używamy koloru (w,R)
-                csp1.RemoveVertex(node1, (ColorEnum)color!);
+                csp1.RemoveVertex(node, (ColorEnum)color!);
                 var node2Neighbors = csp1.VertexConstraints(node2, (ColorEnum)color!);
                 foreach (var n in node2Neighbors)
                 {
@@ -147,13 +147,13 @@ namespace _3_coloring_algorithm
                     return true;
                 }
 
-                var csp2 = (_42CSP)csp.Clone();
-                var colors2 = (int[])colors.Clone();
                 // odrzucamy kolor (w,R)
                 // wybieramy (v,R)
+                var csp2 = (_42CSP)csp.Clone();
+                var colors2 = (int[])colors.Clone();
                 csp2.RemoveVertex(node2, (ColorEnum)color!);
-                colors2[node1] = (int)color!;
-                csp2.RemoveNode(node1);
+                colors2[node] = (int)color!;
+                csp2.RemoveNode(node);
 
                 result = _42CSPRecursive(csp2, colors2);
                 if (result)
@@ -330,7 +330,7 @@ namespace _3_coloring_algorithm
             return false;
         }
 
-        static bool Lemma7(_42CSP csp, out int node1, out int node2, out ColorEnum? color)
+        static bool Lemma7(_42CSP csp, out int node, out int node2, out ColorEnum? color)
         {
             var nodes = csp.Nodes();
 
@@ -349,7 +349,7 @@ namespace _3_coloring_algorithm
                     var wConstraints = csp.VertexConstraints(neighbour.index, neighbour.color);
                     if (wConstraints.Count() > 1)
                     {
-                        node1 = n;
+                        node = n;
                         node2 = neighbour.index;
                         color = neighbour.color;
                         return true;
@@ -357,7 +357,7 @@ namespace _3_coloring_algorithm
                 }
             }
 
-            node1 = -1;
+            node = -1;
             node2 = -1;
             color = null;
             return false;
