@@ -1,18 +1,34 @@
 ﻿namespace _3_coloring_algorithm
 {
-    internal class _42CSP : CSP
+    internal class _42CSP : CSP, ICloneable
     {
-        private _42CSPDualNode[] dualNodeInfo;
+
+        private _42CSPDualNode[] dualNodeInfo = Array.Empty<_42CSPDualNode>();
 
         public override int NodeSize
         {
             get { return 4; }
         }
 
+        public _42CSP() { }
+
+        public object Clone()
+        {
+            _42CSP cp = new();
+            cp.g = this.g.Clone();
+            cp.dualNodeInfo = new _42CSPDualNode[dualNodeInfo.Length];
+            for (int i = 0; i < dualNodeInfo.Length; i++)
+            {
+                cp.dualNodeInfo[i] = (_42CSPDualNode)dualNodeInfo[i].Clone();
+            }
+            return cp;
+        }
+
         public _42CSP(_32CSP csp) 
         {
             var nodes = csp.Nodes();
             dualNodeInfo = new _42CSPDualNode[nodes.Count()];
+            Array.Fill(dualNodeInfo, new _42CSPDualNode());
 
             foreach (var n in nodes)
             {
@@ -59,7 +75,7 @@
             }
 
             dualNodeInfo[node1].j = node2;
-            dualNodeInfo[node1].constrainColor = color;
+            dualNodeInfo[node1].constraintColor = color;
 
             List<ColorEnum> possibleColors = new List<ColorEnum>() { ColorEnum.A, ColorEnum.B, ColorEnum.C, ColorEnum.D };
 
