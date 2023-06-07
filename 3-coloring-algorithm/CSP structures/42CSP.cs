@@ -55,7 +55,7 @@
 
             if (colors1.Count() != 3 || colors2.Count() != 3)
             {
-                throw new Exception("Nodes in MergeIntoDualNode don't have 3 colors avaible!");
+                throw new Exception("Nodes in MergeIntoDualNode don't have 3 colors available!");
             }
 
             dualNodeInfo[node1].j = node2;
