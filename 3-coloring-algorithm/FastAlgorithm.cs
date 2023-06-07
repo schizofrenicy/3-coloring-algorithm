@@ -125,6 +125,45 @@ namespace _3_coloring_algorithm
                 csp.RemoveVertex(node, (ColorEnum)color!);
                 return _42CSPRecursive(csp, colors);
             }
+            // LEMMA 6
+            if (Lemma7(csp, out node, out node2, out color))
+            {
+                // używamy koloru (w,R)
+                var csp1 = (_42CSP)csp.Clone();
+                var colors1 = (int[])colors.Clone();
+                csp1.RemoveVertex(node, (ColorEnum)color!);
+                var node2Neighbors = csp1.VertexConstraints(node2, (ColorEnum)color!);
+                foreach (var n in node2Neighbors)
+                {
+                    csp1.RemoveVertex(n.index, n.color);
+                }
+                colors1[node2] = (int)color!;
+                csp1.RemoveNode(node2);
+
+                var result = _42CSPRecursive(csp1, colors1);
+                if (result)
+                {
+                    RewriteArray(colors, colors1);
+                    return true;
+                }
+
+                // odrzucamy kolor (w,R)
+                // wybieramy (v,R)
+                var csp2 = (_42CSP)csp.Clone();
+                var colors2 = (int[])colors.Clone();
+                csp2.RemoveVertex(node2, (ColorEnum)color!);
+                colors2[node] = (int)color!;
+                csp2.RemoveNode(node);
+
+                result = _42CSPRecursive(csp2, colors2);
+                if (result)
+                {
+                    RewriteArray(colors, colors2);
+                    return true;
+                }
+
+                return false;
+            }
 
             return false;
         }
@@ -289,6 +328,51 @@ namespace _3_coloring_algorithm
             node = -1;
             color = null;
             return false;
+        }
+
+        static bool Lemma7(_42CSP csp, out int node, out int node2, out ColorEnum? color)
+        {
+            var nodes = csp.Nodes();
+
+            foreach (var n in nodes)
+            {
+                var colors = csp.NodeColors(n);
+
+                foreach (var col in colors)
+                {
+                    var constraints = csp.VertexConstraints(n, col);
+                    if (constraints.Count() != 1) continue;
+                    var neighbour = constraints.ElementAt(0);
+
+                    if (neighbour.color != col) continue;
+
+                    var wConstraints = csp.VertexConstraints(neighbour.index, neighbour.color);
+                    if (wConstraints.Count() > 1)
+                    {
+                        node = n;
+                        node2 = neighbour.index;
+                        color = neighbour.color;
+                        return true;
+                    }
+                }
+            }
+
+            node = -1;
+            node2 = -1;
+            color = null;
+            return false;
+        }
+
+        static void RewriteArray(int[] arr1, int[] arr2)
+        {
+            if (arr1.Length != arr2.Length)
+            {
+                throw new ArgumentException("Arrays should have same length!");
+            }
+            for (int i = 0; i < arr1.Length; i++)
+            {
+                arr1[i] = arr2[i];
+            }
         }
     }
 }
