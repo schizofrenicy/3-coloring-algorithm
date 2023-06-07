@@ -2,11 +2,20 @@
 
 namespace _3_coloring_algorithm
 {
-    internal class _32CSP : CSP
+    internal class _32CSP : CSP, ICloneable
     {
         public override int NodeSize
         {
             get { return 3; }
+        }
+
+        public _32CSP() { }
+
+        public object Clone()
+        {
+            _32CSP cp = new();
+            cp.g = this.g.Clone();
+            return cp;
         }
 
         public _32CSP(UndirectedGraph<int, SUndirectedEdge<int>> graph)
